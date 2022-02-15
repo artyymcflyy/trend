@@ -336,3 +336,9 @@ ASALocalRun/
 
 # Optional REPL history
 .next
+
+# Environment variable
+.env
+.env.local
+.env.development
+.env.production
