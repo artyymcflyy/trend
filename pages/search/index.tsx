@@ -1,15 +1,25 @@
 import { NextPage } from "next";
-import { ChangeEvent, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
+
 
 const Search: NextPage = () => {
     const [queryParam, setQueryParam] = useState()
     const [results, setResults] = useState<any[]>()
 
     async function fetchData() {
-        const fetchResponse = await fetch(`/api/tvshows?query=${queryParam}`)
+        const fetchResponse = await fetch(`/api/tvshow?query=${queryParam}`)
         const tvShowsResponse = await fetchResponse.json()
         const tvShowsArr = tvShowsResponse.results
-        const results: any[] = tvShowsArr.map((result: any) => <li key={result.id}>{result.name}</li>)
+        const results: any[] = tvShowsArr.map((result: any) => {
+            const title: string = result.name
+
+            return (
+                <li key={result.id}>
+                    <Link href={`/tvShow?title=${title}`}>{title}</Link>
+                </li>
+            )
+        })
         setResults(results)
     }
 
