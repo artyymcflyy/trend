@@ -6,7 +6,7 @@ type TMDBShowResponse = {
 }
 
 type TMDBShowResults = {
-    name: string
+    title: string
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<TMDBShowResponse>) {
