@@ -23,11 +23,11 @@ const Search: NextPage = () => {
             const allLinks: any[] = allResults.map((result: any) => {
                 const resultType = result.first_air_date ? "tv" : "movie"
                 const title: string = resultType === "tv" ? result.name : result.title
-                const keyId: string = result.id.toString()
+                const id: string = result.id.toString()
     
                 return (
-                    <li key={keyId}>
-                        <Link href={`/${resultType}?title=${title}`}>{title}</Link>
+                    <li key={id}>
+                        <Link href={`/${resultType}?id=${id}`}>{title}</Link>
                     </li>
                 )
             })

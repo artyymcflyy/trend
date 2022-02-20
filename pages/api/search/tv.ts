@@ -1,25 +1,40 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type TMDBTvShowsResponse = {
-    results: Array<TMDBShowsResults>
+type TMDBTvResponse = {
+    results: Array<TMDBTvResults>
 }
 
-type TMDBShowsResults = {
+type TMDBTvResults = {
     id: number,
     title: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<TMDBTvShowsResponse>) {
-    const { query } = req.query
-    const queryToString = String(query)
+// type TMDBTvDetailsResults = {
+//     id: number,
+//     title: string
+// }
 
-    let tvShows: TMDBTvShowsResponse | undefined = await searchForTVShows(queryToString)
+export default async function handler(req: NextApiRequest, res: NextApiResponse<TMDBTvResponse>) {
+    const { query, id } = req.query
+    const idToString = id !== undefined ? String(id) : undefined
+    const queryToString = query !== undefined ? String(query) : undefined
 
-    return res.status(200).send(tvShows)
+    let tvShows: TMDBTvResponse | undefined
+    let tvShowDetails: any | undefined
+
+    if (queryToString) {
+        tvShows = await searchForTVShows(queryToString)
+    }
+    
+    if (idToString) {
+        tvShowDetails = await searchTvShowDetails(idToString)
+    }
+
+    return res.status(200).send(tvShows || tvShowDetails)
 }
 
-async function searchForTVShows(title: string): Promise<TMDBTvShowsResponse> {
+async function searchForTVShows(title: string): Promise<TMDBTvResponse> {
     const apiKey = process.env.apiKey
     const page = 1
     const language = 'en-US'
@@ -29,6 +44,11 @@ async function searchForTVShows(title: string): Promise<TMDBTvShowsResponse> {
     return tvShows
 }
 
-// async function searchTvShowDetails(id: number) {
-
-// }
+async function searchTvShowDetails(id: string) {
+    const apiKey = process.env.apiKey
+    const language = 'en-US'
+    const tmdbUrl = `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=${language}`
+    const res = await fetch(tmdbUrl)
+    const details = await res.json()
+    return details
+}
